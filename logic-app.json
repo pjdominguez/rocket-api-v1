@@ -1,0 +1,511 @@
+{
+    "definition": {
+        "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+        "actions": {
+            "Compose": {
+                "inputs": {
+                    "launchWindows": [
+                        "@variables('launchwindows')"
+                    ]
+                },
+                "runAfter": {
+                    "For_each_location": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "Compose"
+            },
+            "Condition": {
+                "actions": {
+                    "Scope": {
+                        "actions": {
+                            "Condition_2": {
+                                "actions": {
+                                    "Set_variable_2": {
+                                        "inputs": {
+                                            "name": "Locations",
+                                            "value": "{\n\t\"locations\": [{\n\t\t\t\"Location\": \"@{triggerOutputs()['queries']['location']}\"\n\t\t}\n\t]\n}"
+                                        },
+                                        "runAfter": {},
+                                        "type": "SetVariable"
+                                    }
+                                },
+                                "else": {
+                                    "actions": {
+                                        "Response_2": {
+                                            "inputs": {
+                                                "body": {
+                                                    "message": "Invalid location, please try again"
+                                                },
+                                                "headers": {
+                                                    "Content-Type": "application/json"
+                                                },
+                                                "statusCode": 404
+                                            },
+                                            "kind": "Http",
+                                            "runAfter": {},
+                                            "type": "Response"
+                                        }
+                                    }
+                                },
+                                "expression": {
+                                    "or": [
+                                        {
+                                            "equals": [
+                                                "@triggerOutputs()['queries']['location']",
+                                                "Melbourne"
+                                            ]
+                                        },
+                                        {
+                                            "equals": [
+                                                "@triggerOutputs()['queries']['location']",
+                                                "Darwin"
+                                            ]
+                                        },
+                                        {
+                                            "equals": [
+                                                "@triggerOutputs()['queries']['location']",
+                                                "Hobart"
+                                            ]
+                                        },
+                                        {
+                                            "equals": [
+                                                "@triggerOutputs()['queries']['location']",
+                                                "Perth"
+                                            ]
+                                        }
+                                    ]
+                                },
+                                "runAfter": {},
+                                "type": "If"
+                            }
+                        },
+                        "runAfter": {},
+                        "type": "Scope"
+                    }
+                },
+                "else": {
+                    "actions": {
+                        "Set_variable": {
+                            "inputs": {
+                                "name": "Locations",
+                                "value": "{\n  \"locations\": [\n    {\n      \"Location\": \"Melbourne\"\n    },\n    {\n      \"Location\": \"Perth\"\n    },\n    {\n      \"Location\": \"Hobart\"\n    },\n   {\n      \"Location\": \"Darwin\"\n    }\n  ]\n}"
+                            },
+                            "runAfter": {},
+                            "type": "SetVariable"
+                        }
+                    }
+                },
+                "expression": {
+                    "and": [
+                        {
+                            "not": {
+                                "equals": [
+                                    "@coalesce(triggerOutputs()?['queries']?['location'],'Null')",
+                                    "Null"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                "runAfter": {
+                    "Initialize_Locations_variable": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "If"
+            },
+            "For_each_location": {
+                "actions": {
+                    "For_each": {
+                        "actions": {
+                            "Set_conditions": {
+                                "actions": {
+                                    "Append_to_array_variable": {
+                                        "inputs": {
+                                            "name": "launchwindows",
+                                            "value": {
+                                                "DateTime": "@items('For_each')?['dt_txt']",
+                                                "Location": "@body('Parse_Response')?['city']?['name']",
+                                                "Score": "@body('Call_Function_App_to_Compute_Score')"
+                                            }
+                                        },
+                                        "runAfter": {
+                                            "Call_Function_App_to_Compute_Score": [
+                                                "Succeeded"
+                                            ]
+                                        },
+                                        "type": "AppendToArrayVariable"
+                                    },
+                                    "Call_Function_App_to_Compute_Score": {
+                                        "inputs": {
+                                            "body": {
+                                                "temp": "@items('For_each')?['main']?['temp']",
+                                                "winddirection": "@items('For_each')?['wind']?['deg']",
+                                                "windspeed": "@items('For_each')?['wind']?['speed']"
+                                            },
+                                            "function": {
+                                                "id": "/subscriptions/d109fe92-b81e-4a2f-aeaa-0d0407b6d330/resourceGroups/ResourceGroup-Test/providers/Microsoft.Web/sites/ComputeLaunchWindowScore/functions/GetLaunchWindowScore"
+                                            }
+                                        },
+                                        "operationOptions": "DisableAsyncPattern",
+                                        "runAfter": {},
+                                        "type": "Function"
+                                    }
+                                },
+                                "expression": {
+                                    "and": [
+                                        {
+                                            "lessOrEquals": [
+                                                "@items('For_each')?['clouds']?['all']",
+                                                "@body('Parse_LocationDetails')?['cloudthreshold']"
+                                            ]
+                                        },
+                                        {
+                                            "lessOrEquals": [
+                                                "@items('For_each')?['wind']?['speed']",
+                                                "@body('Parse_LocationDetails')?['windthreshold']"
+                                            ]
+                                        }
+                                    ]
+                                },
+                                "runAfter": {},
+                                "type": "If"
+                            }
+                        },
+                        "foreach": "@body('Parse_Response')?['list']",
+                        "runAfter": {
+                            "Parse_Response": [
+                                "Succeeded"
+                            ]
+                        },
+                        "runtimeConfiguration": {
+                            "concurrency": {
+                                "repetitions": 50
+                            }
+                        },
+                        "type": "Foreach"
+                    },
+                    "GetLocationDetails": {
+                        "inputs": {
+                            "body": {
+                                "location": "@items('For_each_location')?['Location']"
+                            },
+                            "function": {
+                                "id": "/subscriptions/d109fe92-b81e-4a2f-aeaa-0d0407b6d330/resourceGroups/ResourceGroup-Test/providers/Microsoft.Web/sites/ComputeLaunchWindowScore/functions/GetLocationDetails"
+                            }
+                        },
+                        "runAfter": {},
+                        "type": "Function"
+                    },
+                    "Get_5_Day_Data_from_OpenWeatherAPI": {
+                        "inputs": {
+                            "method": "GET",
+                            "uri": "http://api.openweathermap.org/data/2.5/forecast?id=@{body('Parse_LocationDetails')?['locationid']}&APPID=cc806b646637242d6c129a09cf2fde8a"
+                        },
+                        "runAfter": {
+                            "Parse_LocationDetails": [
+                                "Succeeded"
+                            ]
+                        },
+                        "type": "Http"
+                    },
+                    "Parse_LocationDetails": {
+                        "inputs": {
+                            "content": "@body('GetLocationDetails')",
+                            "schema": {
+                                "properties": {
+                                    "cloudthreshold": {
+                                        "type": "integer"
+                                    },
+                                    "locationid": {
+                                        "type": "string"
+                                    },
+                                    "windthreshold": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "runAfter": {
+                            "GetLocationDetails": [
+                                "Succeeded"
+                            ]
+                        },
+                        "type": "ParseJson"
+                    },
+                    "Parse_Response": {
+                        "inputs": {
+                            "content": "@body('Get_5_Day_Data_from_OpenWeatherAPI')",
+                            "schema": {
+                                "properties": {
+                                    "city": {
+                                        "properties": {
+                                            "coord": {
+                                                "properties": {
+                                                    "lat": {
+                                                        "type": "number"
+                                                    },
+                                                    "lon": {
+                                                        "type": "number"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "country": {
+                                                "type": "string"
+                                            },
+                                            "id": {
+                                                "type": "integer"
+                                            },
+                                            "name": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    "cnt": {
+                                        "type": "integer"
+                                    },
+                                    "cod": {
+                                        "type": "string"
+                                    },
+                                    "list": {
+                                        "items": {
+                                            "properties": {
+                                                "clouds": {
+                                                    "properties": {
+                                                        "all": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "dt": {
+                                                    "type": "integer"
+                                                },
+                                                "dt_txt": {
+                                                    "type": "string"
+                                                },
+                                                "main": {
+                                                    "properties": {
+                                                        "grnd_level": {
+                                                            "type": "number"
+                                                        },
+                                                        "humidity": {
+                                                            "type": "integer"
+                                                        },
+                                                        "pressure": {
+                                                            "type": "number"
+                                                        },
+                                                        "sea_level": {
+                                                            "type": "number"
+                                                        },
+                                                        "temp": {
+                                                            "type": "number"
+                                                        },
+                                                        "temp_kf": {
+                                                            "type": "number"
+                                                        },
+                                                        "temp_max": {
+                                                            "type": "number"
+                                                        },
+                                                        "temp_min": {
+                                                            "type": "number"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "sys": {
+                                                    "properties": {
+                                                        "pod": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "weather": {
+                                                    "items": {
+                                                        "properties": {
+                                                            "description": {
+                                                                "type": "string"
+                                                            },
+                                                            "icon": {
+                                                                "type": "string"
+                                                            },
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "main": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "main",
+                                                            "description",
+                                                            "icon"
+                                                        ],
+                                                        "type": "object"
+                                                    },
+                                                    "type": "array"
+                                                },
+                                                "wind": {
+                                                    "properties": {
+                                                        "deg": {
+                                                            "type": "number"
+                                                        },
+                                                        "speed": {
+                                                            "type": "number"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "required": [
+                                                "dt",
+                                                "main",
+                                                "weather",
+                                                "clouds",
+                                                "wind",
+                                                "sys",
+                                                "dt_txt"
+                                            ],
+                                            "type": "object"
+                                        },
+                                        "type": "array"
+                                    },
+                                    "message": {
+                                        "type": "number"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "runAfter": {
+                            "Get_5_Day_Data_from_OpenWeatherAPI": [
+                                "Succeeded"
+                            ]
+                        },
+                        "type": "ParseJson"
+                    }
+                },
+                "foreach": "@body('Parse_JSON')?['locations']",
+                "runAfter": {
+                    "Parse_JSON": [
+                        "Succeeded"
+                    ]
+                },
+                "runtimeConfiguration": {
+                    "concurrency": {
+                        "repetitions": 20
+                    }
+                },
+                "type": "Foreach"
+            },
+            "Initialize_LaunchWindows_Array": {
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "launchwindows",
+                            "type": "Array"
+                        }
+                    ]
+                },
+                "runAfter": {
+                    "Condition": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "InitializeVariable"
+            },
+            "Initialize_Locations_variable": {
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "Locations",
+                            "type": "String"
+                        }
+                    ]
+                },
+                "runAfter": {},
+                "type": "InitializeVariable"
+            },
+            "Parse_JSON": {
+                "inputs": {
+                    "content": "@variables('Locations')",
+                    "schema": {
+                        "properties": {
+                            "locations": {
+                                "items": {
+                                    "properties": {
+                                        "Location": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "Location"
+                                    ],
+                                    "type": "object"
+                                },
+                                "type": "array"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "runAfter": {
+                    "Initialize_LaunchWindows_Array": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "ParseJson"
+            },
+            "Response": {
+                "inputs": {
+                    "body": "@body('SortPayload')",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "statusCode": 200
+                },
+                "kind": "Http",
+                "runAfter": {
+                    "SortPayload": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "Response"
+            },
+            "SortPayload": {
+                "inputs": {
+                    "body": "@outputs('Compose')",
+                    "function": {
+                        "id": "/subscriptions/d109fe92-b81e-4a2f-aeaa-0d0407b6d330/resourceGroups/ResourceGroup-Test/providers/Microsoft.Web/sites/ComputeLaunchWindowScore/functions/SortPayload"
+                    }
+                },
+                "runAfter": {
+                    "Compose": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "Function"
+            }
+        },
+        "contentVersion": "1.0.0.0",
+        "outputs": {},
+        "parameters": {},
+        "triggers": {
+            "manual": {
+                "inputs": {
+                    "method": "GET",
+                    "relativePath": "/locations",
+                    "schema": {}
+                },
+                "kind": "Http",
+                "type": "Request"
+            }
+        }
+    }
+}

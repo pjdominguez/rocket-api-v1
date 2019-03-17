@@ -23,7 +23,7 @@ paths:
     get:
       description: Trigger a run of the logic app.
       operationId: manual-invoke
-      summary: Rocket Launch
+      summary: Rocket Launch Location Windows
       parameters:
         - name: location
           in: query
@@ -42,6 +42,11 @@ paths:
           schema:
             $ref: >-
               #/definitions/ManualPathsInvokeLocationsLocationGet200ApplicationJsonResponse
+        '422':
+          description: The Logic App Response.
+          schema:
+            $ref: >-
+              #/definitions/ManualPathsInvokeLocationsLocationGet422ApplicationJsonResponse
         '500':
           description: The Logic App Response.
           schema:

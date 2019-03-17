@@ -40,7 +40,7 @@
                                                 "headers": {
                                                     "Content-Type": "application/json"
                                                 },
-                                                "statusCode": 404
+                                                "statusCode": 422
                                             },
                                             "kind": "Http",
                                             "runAfter": {},

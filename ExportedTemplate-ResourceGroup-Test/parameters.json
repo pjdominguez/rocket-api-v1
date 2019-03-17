@@ -1,0 +1,249 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workflows_Rocket_All_name": {
+            "value": null
+        },
+        "serverfarms_CentralUSPlan_name": {
+            "value": null
+        },
+        "workflows_Rocket_Locations_name": {
+            "value": null
+        },
+        "integrationAccounts_RocketCo_name": {
+            "value": null
+        },
+        "sites_ComputeLaunchWindowScore_name": {
+            "value": null
+        },
+        "service_apim_rocket_dev_name": {
+            "value": null
+        },
+        "workflows_RocketCo_LaunchWindow_name": {
+            "value": null
+        },
+        "workflows_RockerCo_LauchLocations_name": {
+            "value": null
+        },
+        "storageAccounts_computelaunchwia054_name": {
+            "value": null
+        },
+        "components_ComputeLaunchWindowScore_name": {
+            "value": null
+        },
+        "users_1_name": {
+            "value": null
+        },
+        "config_web_name": {
+            "value": null
+        },
+        "apis_echo_api_name": {
+            "value": null
+        },
+        "groups_guests_name": {
+            "value": null
+        },
+        "policies_policy_name": {
+            "value": null
+        },
+        "products_starter_name": {
+            "value": null
+        },
+        "apis_launchwindow_name": {
+            "value": null
+        },
+        "groups_developers_name": {
+            "value": null
+        },
+        "notifications_BCC_name": {
+            "value": null
+        },
+        "products_unlimited_name": {
+            "value": null
+        },
+        "subscriptions_master_name": {
+            "value": null
+        },
+        "groups_administrators_name": {
+            "value": null
+        },
+        "users_1_name_1": {
+            "value": null
+        },
+        "alertrules_Failure_Anomalies___ComputeLaunchWindowScore_name": {
+            "value": null
+        },
+        "apis_rockerco_lauchlocations_name": {
+            "value": null
+        },
+        "users_1_name_2": {
+            "value": null
+        },
+        "apis_echo_api_name_1": {
+            "value": null
+        },
+        "groups_guests_name_1": {
+            "value": null
+        },
+        "templates_AccountClosedDeveloper_name": {
+            "value": null
+        },
+        "policies_policy_name_1": {
+            "value": null
+        },
+        "apis_echo_api_name_2": {
+            "value": null
+        },
+        "groups_guests_name_2": {
+            "value": null
+        },
+        "policies_policy_name_2": {
+            "value": null
+        },
+        "apis_launchwindow_name_1": {
+            "value": null
+        },
+        "groups_developers_name_1": {
+            "value": null
+        },
+        "properties_5c8b14dd8e22fb8d777e7678_name": {
+            "value": null
+        },
+        "properties_5c8df9d8b68e4052bd869bd6_name": {
+            "value": null
+        },
+        "properties_5c8e0fde2663e4498ddaab4e_name": {
+            "value": null
+        },
+        "notifications_AccountClosedPublisher_name": {
+            "value": null
+        },
+        "templates_EmailChangeIdentityDefault_name": {
+            "value": null
+        },
+        "groups_developers_name_2": {
+            "value": null
+        },
+        "templates_NewIssueNotificationMessage_name": {
+            "value": null
+        },
+        "subscriptions_5c8b0b0d79ed2500a1070001_name": {
+            "value": null
+        },
+        "subscriptions_5c8b0b0e79ed2500a1070002_name": {
+            "value": null
+        },
+        "templates_ConfirmSignUpIdentityDefault_name": {
+            "value": null
+        },
+        "templates_PasswordResetIdentityDefault_name": {
+            "value": null
+        },
+        "groups_administrators_name_1": {
+            "value": null
+        },
+        "templates_InviteUserNotificationMessage_name": {
+            "value": null
+        },
+        "templates_NewCommentNotificationMessage_name": {
+            "value": null
+        },
+        "operations_create_resource_name": {
+            "value": null
+        },
+        "operations_modify_resource_name": {
+            "value": null
+        },
+        "operations_remove_resource_name": {
+            "value": null
+        },
+        "groups_administrators_name_2": {
+            "value": null
+        },
+        "templates_NewDeveloperNotificationMessage_name": {
+            "value": null
+        },
+        "operations_retrieve_resource_name": {
+            "value": null
+        },
+        "operations_manual_invoke_name": {
+            "value": null
+        },
+        "templates_RejectDeveloperNotificationMessage_name": {
+            "value": null
+        },
+        "policies_policy_name_3": {
+            "value": null
+        },
+        "templates_RequestDeveloperNotificationMessage_name": {
+            "value": null
+        },
+        "operations_retrieve_header_only_name": {
+            "value": null
+        },
+        "templates_PurchaseDeveloperNotificationMessage_name": {
+            "value": null
+        },
+        "notifications_NewApplicationNotificationMessage_name": {
+            "value": null
+        },
+        "templates_ApplicationApprovedNotificationMessage_name": {
+            "value": null
+        },
+        "notifications_RequestPublisherNotificationMessage_name": {
+            "value": null
+        },
+        "templates_PasswordResetByAdminNotificationMessage_name": {
+            "value": null
+        },
+        "operations_retrieve_resource_cached_name": {
+            "value": null
+        },
+        "notifications_PurchasePublisherNotificationMessage_name": {
+            "value": null
+        },
+        "notifications_NewIssuePublisherNotificationMessage_name": {
+            "value": null
+        },
+        "schemas_5c8b14cb3558ad13d4b1de2a_name": {
+            "value": null
+        },
+        "operations_manual_invoke_name_1": {
+            "value": null
+        },
+        "policies_policy_name_4": {
+            "value": null
+        },
+        "hostNameBindings_computelaunchwindowscore.azurewebsites.net_name": {
+            "value": null
+        },
+        "backends_LogicApp_RocketCoLaunchWindow_ResourceGroup_Test_name": {
+            "value": null
+        },
+        "policies_policy_name_5": {
+            "value": null
+        },
+        "backends_LogicApp_RockerCoLauchLocations_ResourceGroup_Test_name": {
+            "value": null
+        },
+        "templates_QuotaLimitApproachingDeveloperNotificationMessage_name": {
+            "value": null
+        },
+        "policies_policy_name_6": {
+            "value": null
+        },
+        "schemas_5c8dfc553558ad13d4b1de52_name": {
+            "value": null
+        },
+        "notifications_QuotaLimitApproachingPublisherNotificationMessage_name": {
+            "value": null
+        },
+        "policies_policy_name_7": {
+            "value": null
+        },
+        "policies_policy_name_8": {
+            "value": null
+        }
+    }
+}

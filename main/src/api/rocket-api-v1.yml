@@ -1,0 +1,58 @@
+swagger: '2.0'
+info:
+  title: RockerCo_LauchLocations
+  version: '1.0'
+  description: Azure Logic App.
+host: apim-rocket-dev.azure-api.net
+schemes:
+  - https
+securityDefinitions:
+  apiKeyHeader:
+    type: apiKey
+    name: Ocp-Apim-Subscription-Key
+    in: header
+  apiKeyQuery:
+    type: apiKey
+    name: subscription-key
+    in: query
+security:
+  - apiKeyHeader: []
+  - apiKeyQuery: []
+paths:
+  /locations:
+    get:
+      description: Trigger a run of the logic app.
+      operationId: manual-invoke
+      summary: Rocket Launch
+      parameters:
+        - name: location
+          in: query
+          description: location for the Rocket Launch
+          type: string
+        - name: request-manual
+          in: body
+          schema:
+            $ref: '#/definitions/request-manual'
+          description: The request body.
+      consumes:
+        - application/json
+      responses:
+        '200':
+          description: The Logic App Response.
+          schema:
+            $ref: >-
+              #/definitions/ManualPathsInvokeLocationsLocationGet200ApplicationJsonResponse
+        '500':
+          description: The Logic App Response.
+          schema:
+            $ref: >-
+              #/definitions/ManualPathsInvokeLocationsLocationGet500ApplicationJsonResponse
+      produces:
+        - application/json
+definitions:
+  request-manual: {}
+  ManualPathsInvokeLocationsLocationGet200ApplicationJsonResponse:
+    type: object
+  ManualPathsInvokeLocationsLocationGet500ApplicationJsonResponse:
+    type: object
+tags: []
